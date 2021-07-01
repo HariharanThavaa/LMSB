@@ -1,0 +1,8 @@
+npx create-react-app challenges-frontend
+to create the react app
+
+We suggest that you begin by typing:
+
+  cd challenges-frontend
+  npm start
+
