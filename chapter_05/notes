@@ -1,0 +1,178 @@
+List of taks
+1. Store all the user attempts and have a way to query them per user
+2. Expose a new REST endpoint to get the latest attempts for a given user
+3. Create a new service (business logic) to retrieve those attempts
+4. Show the attempts' history to the users on the web page after they send a new one.
+
+
+The Data Model
+==============
+
+Users Domain - User
+Challenges Domain - Challenge and Challenge Attempt
+
+
+Users Domain => user
+Challenges Domain => ChallengeAttempt
+
+
+Choosing the Database
+=====================
+
+SQL Database are relational, with a fixed schema, they allow us to make complex queries
+NOSQL Database for unstructured data - Key value pairs, documents, graphs, column based data
+
+
+NOSQL for large volume of data since this dbs are distributed. 
+good performance on writing and reading data
+Data availability 
+
+
+Relational Database
+ACID guarantees 
+Atomicity - Transaction either succeed or fail as a unit
+Consistency - Data always transitions between valid states
+Isolation - Ensure the concurrency does not cause side effects
+Durability - After a transaction the state is persisted even in the event of a system failure
+But they don't scale that well. in to multiple nodes
+
+
+We are going to use relational database to get the benefits from ACID guarantees
+
+
+H2, Hibernate and JPA
+=====================
+
+We choose H2 database since it's small and easy to install
+
+Object Relational Mapping Framework (ORM)
+Instead of dealing tabular data and plain queries, we will use Hibernate to map our Java Objects to SQL records
+
+Abstraction The Java Persistent API (JPA)
+
+1. From our java code, we'll use the Spring boot JPA annotations and integrations, So we keep our code decoupled from Hibernate specifics
+2. On the implementation side, Hibernate takes care of all the logic to map our objects to database entities
+3. Hibernate supports multiple SQL dialects for different databases, and the H2 dialect is one of them
+4. Spring Boot autoconfiguration sets up H2 and Hibernate for us, but we can also customize behaviours
+
+
+Spring Boot Data JPA
+====================
+
+Dependencies and autoconfigurations
+
+abstracts access to databases using JPA in spring-based programming style
+
+Spring-boot-starter-data-jpa module 
+to quick start to data access
+embedded H2 support
+
+
+add dependencies
+
+
+Spring Data JPA technology stack
+================================
+
+Connection - Java API
+Connection Pool
+Datasource - Java API - Hikari Implementation
+
+
+SessionImpl - Hibernate
+1. uses connection
+2. SessionImpl implements Entity Manager
+
+Entitity Manager - JPA
+
+
+SimpleJpaRepository
+1. uses EntityManager
+2. implements JpaRepository
+
+
+JpaRepository - Spring Data Jpa
+
+
+
+Datasource (Auto)configuration
+==============================
+
+
+@Entitry => mark this class as an object to be mapped to a database record
+all the fields will be persited, If we don't want to persist then we can use @Transient
+
+@Data is perfect for classes that are used as data entities
+toString + getters + setters
+
+JPA and Hiberanate needs default Noargs Constructor
+
+
+@Id - unique value to identify the row
+@GeneratedValue - then hibernate will fill in with values.
+
+
+Entities
+
+Repositories
+============
+
+
+Storing Users and Attempts
+==========================
+
+New logic for service
+1. The attempt should be stored, no matter if it was correct or wrong
+2. If it's the first attempt for a given user, identified by their alias, we should create the user. If the alias exists, the attempt should be linked to that existing user.
+
+
+Testing Stat Controller
+======================
+
+Post the attempt
+http POST :8080/attempts factorA=58 factorB=92 userAlias=Hariharan guess=5303
+
+to get the stats
+http ":8080/attempts?alias=Hariharan"
+
+
+
+
+User Interface
+==============
+
+Added new API client method
+Added new component LastAttemptsComponent
+
+1. A new function that uses ApiClient to retreive the last attempts, check if the HTTP response was OK, and store the array in the state
+2. A call to this new function right after we get a response to the request that sends a new attempt
+3. The component's HTML tag inside the render() function of this parent component
+4. As an improvement, we also extract the logic to refresh the challenge (included before in componentDidMount) to a new function, refreshChallenge. We will create a new challenge for the users after they send an attempt
+
+
+Include Last Attempts Component to ChallengeComponent
+
+
+
+Summary
+=======
+
+1. You got the complete picture of how a three layer, three tier architecture works, with the introduction of the repository classes and the database.
+2. You learned how to model your data, taking into account your requirements for querying it and proper domain isolation
+3. You went through the main difference between SQL and NOSQL, and the criteria you can use to make future choices
+4. You learned about JPA and its integration with Hibernate, Spring Data and Spring Boot.
+5. You developed a real persistent layer for an application using JPA annotations and Spring Data repositories, using query methods and defined queries.
+6. You integrated the new attempts history feature all the way up to the front end, improving our practical case study.
+
+
+
+
+
+
+
+
+
+
+
+
+
