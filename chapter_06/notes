@@ -1,0 +1,431 @@
+Starting With Micro Services.
+============================
+
+End Summary
+
+1. You saw how a small-monolith approach can help you when starting new projects.
+2. You had a first contact with the pros and cons of the microservice architectures (You'll keep laearning them over the next chapters)
+3. You understood the differences between synchronous and asynchronous processing in distributed systems and how they relate to eventual consistency.
+4. You learned why it's important to embrace those new paradigms asynchronous processes, eventual consistency - in microservice architecture to avaoid tight coupling and domain pollution.
+5. You saw why microservices are not the best solution for all cases (e.g. If you need transactionality and immediate data consistency)
+6. You identified the first challenges we're facing in our practical case and saw how the current implementation is not the right way of implementing microservices.
+
+
+Tha Small Monolith Approach
+===========================
+
+Why a Small Monolith?
+
+1. Starting with simple application simplifies the development process
+2. We reduced the time to deploy the first application
+3. Channging architecture and design easy in the beginning
+
+
+The problems with Microservices from Day zero
+=============================================
+
+1. Organization we start multiple microservices, because teams can start work in parallel
+
+
+Conways - System's design tends to resemble the structure of the organization that is building it.
+
+Organization structure -> Software architecture
+
+
+Problems with parallel start?
+1. We wan't get a chance for complete design, So any updates in future needs to be done for all services
+2. It will delay creating MVP and client feedback also be delayed.
+
+
+Small Monoliths are for Small Teams
+===================================
+
+Small team is better at the beginning because 
+1. Can focus on domain definition and experimentation
+2. Can have product ideas validated and a clearer softwre architecture
+3. More people can join the team we can split the team
+
+
+Embracing Refactoring
+=====================
+It's better to improve communication with business stakeholders and project managers to shape a good plan.
+
+
+
+
+Planning the Small Monolith for future Split
+=============================================
+Some good practice to follow
+1. Compartmentalize the code in root package - Keep the domain separate and in future if it is getting bigger the we could move that to new microservice
+2. Take advantage of dependency injection - Code to interface, refactoring using this will be much easier
+3. Once you have identified the contexts (e.g. Challenges and Users), give them a consistent name across your application : To understand the domain boundaries
+4. Don't be afraid to moving classes around (easier with small monilith) during the design phase until boundaries are clear. : Respect Boundaries and Always keep in mind monolith 
+5. Find common patterns and identify what can be later extracted as common libraries, for example : move them to different root pacckage
+6. Use peer reviews to make sure the architecture designs are sound and to facilitate knowledge transfer: Small group instead of following a top-bottom approach
+7. Clearly communicate to the project manager and/ or business reperesentatives to plan time later to split the monolith: Refactoring going to be necessary, and there is nothing wrong with it.
+
+
+Keep the small monolith atleast to the first release
+1. Faster development in early phases is better to get quick feedback on your product
+2. You can easily change the domain boundaries
+3. People get used to the same technical guidelines.That helps acheive future consistency
+4. Common cross-domain functionality cab be identified and shared as libraries (or guide lines)
+5. The team will get a complete view of the system instead of only parts of it. Then, these people can move to the other teams and bring that useful knowledge with them.
+
+
+
+
+New Requirements and Gamification
+=================================
+
+data-driven decision-making (DDDM)- We make decision based on our data to try to improve.
+
+https://tpd.io/dddm
+
+
+Gamification
+1. Points
+2. Badges
+3. Leaderboards
+
+Ref books :  Reality is broken and For the Win
+
+
+User Story 3
+=============
+
+As a user of the application, I want to be motivated to keep solving challenges everyday and not abandon it after a while, This way, I keep execising my brain and improving over time.
+
+
+Gamification: Points, Badges and Leaderboards
+=============================================
+
+StackOverFlow - Every correct answers give some points
+
+
+Moving to Microservices
+=======================
+
+Some of the improvement to the application
+1. Adapt the complexity of the challenge based on the user's statistics
+2. Add hints
+3. Allow the user to log in instead of using an alias
+4. Ask for some user's personal information to collect better metrics.
+
+
+
+Independent Workflows
+=====================
+
+Cleare boudaries of responsibilities
+
+
+Horizontal Scalability
+======================
+
+Vertical - Bigger server container
+Horizontal - more instances and a load balancer
+
+As multiplication is the critical component , If it is micro service we can have multiple multiplication nodes and single gamigication node.
+But if it is monolith we have to extend everything.
+
+
+Horizontal Scalability: Monolith
+================================
+
+Loadbalancer
+
+Small Monolith Instance 1
+Challenges/Users features - Requires 2 CPU 800 MB RAM
+Gamification features - Requires 1 CPU 400 MB RAM
+
+Small Monolith Instance 2
+Challenges/Users features - Requires 2 CPU 800 MB RAM
+Gamification features - Requires 1 CPU 400 MB RAM
+
+Total 
+6 CPU 
+2400 MB RAM
+
+
+Horizontal Scalability: Microservices
+=====================================
+
+Multiplication Instance - 1
+Challenges/Users features - Requires 2 CPU 800 MB RAM
+
+Multiplication Instance - 2
+Challenges/Users features - Requires 2 CPU 800 MB RAM
+
+Multiplication Instance - 1
+Gamification features  - Requires 1 CPU 400 MB RAM
+
+Total
+5 CPU
+2000 MB RAM
+
+
+
+Fine Grained Non functional requirments
+=======================================
+
+Resilience - Gamification can be un available for a period of time
+Security - all the microserrvice doesnot require the same security.
+
+
+Other Advantages
+================
+
+other advantages of micro services
+
+1. Multiple Technologies - We can have java and Golang to develop services. But this is also available for modular monolith
+2. Consistency with organisational Structure - Conway's law, But it has it's own pros and cons
+3. Ability to replace the part of your system - Can replace the microservice with out causing much impact on othere services, But this also possible in modular monolith
+
+
+Disadvantages
+=============
+
+1. You need more time to deliver first working version : Take more time compare to the single service
+2. Moving functionality across domains becomes harder : Once we split, moving the functioanlity across the services it's hard
+3. There is an implicit introduction to new paradigms: Such as Asynchronous Processing, Distributed transactions and eventual consistency
+4. It requires learning new patterns : Routing, Service discovery, distributed tracing and logging and etc.
+5. You may require adopting new rules : Spring cloud, Docker, Message broker, kubernettes etc.
+6. More resources are needed to run your system: Benefits only starts from the Scalability, Fault tolerance and etc
+7. There might be a diversion from standards and common practices: May lead the developers to solve same problem in different services.
+8. The architecture is much more complex: It might take long time to understand how all these pieces work together
+9. You could be distracted with new techniques that you don't need: Attractive tools can catch developers attention even thought it is not necessary for the application.
+
+
+Architecture Overview
+=====================
+
+Browser Get static contents through port 3000
+UIServer (Node.js)
+Serve Compiled React HTML, JS and CSS
+
+Broser Send attempt, GetStats, Get Users through port 8080
+Multiplication Microservice
+Check Atempt
+Store User/Attempt
+Send Attempt to Gamification
+Get Users
+
+Browser Retreive Leader board through port8081 / Multiplication Service send attempt through port 8081
+Gamification Microservice
+Check Result
+Assign Point
+Assign Badges
+Updates Leaderboard
+
+
+Designing and Implementing the New Services
+===========================================
+
+Interfaces
+==========
+
+Rest Services
+Enpoints to expose leaderbaord details
+Accepts attempt details from multiplcation service
+
+
+
+The Spring Boot Skeleton for Gamification
+=========================================
+
+https://start.spring.io to create new skeleton
+
+Dependencies
+Lombok, Spring Web, Validation, Spring Data JPA and the H2 Database.
+
+
+Domain
+======
+1. We create a score card object, which holds the amount of score that a user obtains for a given challenge attempt.
+2. Similarly, we have a badge card object, representing a specific type of badge that has been won at a given time by a user.
+It doesn't need to be tied to a score card since you may win a badge when you surpass a given score threshold
+3. To model the leaderboard, we create a leaderboard position.
+We'll display an ordered list of these domain objects to show the ranking to the user
+
+
+Gamification Domain
+LeaderBoard Position(LBP): 1-1 with U
+Badge Card(BC): N-1 with U
+Score Card(SC): 1-1 with CA, N-1 with U
+
+User Domain
+User(U):  1-1 with LBP , 1-N with BC , 1-N with SC, 1-N with CA
+
+Challenges Domain
+ChallengeAttempt(CA) : N-1 with U, 1-1 with SC
+Challenge (C) : 1-1 with CA
+
+
+Service
+======
+1. The game logic, responsible for processing the attempt and generating the resulting score and badges
+2. The leaderboard logic, which aggregates data and builds the ranking based on score.
+
+UML
+===
+
+GameController(GC) : 1-1 with GS, uses GS
+GameService(GS): 1-1 with GC
+GameServiceImpl(GSI): implements GS, use many BP, uses BR and SR
+BadgeProcessor(BP): N-1 GSI
+BadgeRepository(BR): 1-1 GSI
+ScoreRepository(SR): 1-1 GSI
+
+Score Card
+1. Calcualte the total score of a user
+2. Get a list of user with the highest score. ordered, as leaderBoardRow objects.
+3. Read all ScoreCard records by userId
+
+Changes in Multiplication Microservice
+======================================
+
+RestTemplateBuilder - Spring boot client to access other rest api
+
+
+UI
+==
+1. A new API client to retreive the leaderboard data from the Gamification microservice
+2. An additional React component to render the leaderboard
+
+
+
+Fault Tolerance
+================
+
+One of the primary feature of the microservice is even of one of the service is down rest of the application should work
+as expected.
+
+Try that out
+
+Gmification
+mvnw spring-boot:run
+
+Multiplication
+mvnw spring-boot:run
+
+Challenges frontend
+npm start
+
+Testing is done application is still up and running but leader won't be dispayed
+
+In this scenarion User will not get the score for the all the attempts while Gamigication is down
+
+New Challenges
+1. Retry logic will make system more complex
+2. Even the multiplication also gone down then data loss.
+
+The Challenge Ahead
+===================
+
+Tight Coupling
+==============
+1. second microservice needs to be available all the time and needs to respond within that time
+
+First ms is triggering event to second ms
+
+Synchronous Interfaces vs. Eventual Consistency
+===============================================
+
+Synchronous Interfaces introduce strong dependency between microservices.
+
+1. Do we need to block the completed rquest?
+2. Do we need to know everything is completed before returning the response?
+
+Java Futures can be used
+
+Eventual Consistency
+
+We should accept 2 ms will not be consistent with in given time.
+
+Can our system be eventual consistent?
+
+Microservices are not always a best solution
+============================================
+
+If your project's requirements are not compatible with eventual consistency across domains, a modular monolithic application
+might suit you better.
+
+
+Transactions
+=============
+
+1. Two-phased Commit
+
+In monolithic, We could use same releational db to store users, attmpts, scores and badges.
+Then beenefit form db transactions
+
+We could ACID guarantee - Atomicity, Consistency Isolation and Durability.
+
+ACID guarantees cannot be acheieved in microservices
+We can't acheive the real transactions
+They are deployed independently and their dbs also decoupled
+Eventual consistency
+
+Related data to store everything or nothing is hard in microservices
+
+
+Imaginative and complex way to achieve transaction roll back in microservice architecture
+=========================================================================================
+
+1. Two-phased commit 2PC
+2. Sagas
+
+2PC
+===
+We send the request to Gamification but we don't store anything
+once we get the signal
+then we store in both the services.
+
+Challenge : What if 2nd phase fail
+
+Sagas
+=====
+Asynchronous interface informs multiplication if something goes on gamification and multiplication delete the data.
+
+API Exposure
+============
+
+And ensure security by Gateway pattern.
+
+
+
+Chapter Summary
+================
+1.You saw how a small-monolithic approach can help you when starting new projects.
+2. You had a first contract with the pos and cons of microservice architecture (You'll keep learning them over the next chapters)
+3. You understood the differences between synchronous and asynchrosnous processing in distributed systems and how they relate to eventual consistency
+4. You learned why it's important to embrace those new paradigms asynchronous processes, eventual consistency - in microservice architecturs to avoid tight coupling and domain pollution.
+5. You saw why microservices are not the best solution for all cases. (e.g., If you need transactionality and immediate data consistency)
+6. You identified the first challenges we're facing in our practical case and how the current implmentation is not the right way of implementing microservices.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
