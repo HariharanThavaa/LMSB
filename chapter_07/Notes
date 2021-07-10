@@ -1,0 +1,461 @@
+Event Driven Architectures
+==========================
+
+What to expect in this Chapter
+1. You learned the core concepts of event-driven architectures. For that, you got a good knowledge base of how message brokers work
+2. You went through the pros and cons of event-driven architectures to know when it makes sense to apply this pattern in your future projects
+3. You understood how to implement different messaging pattern depending on your use cases.
+4. You applied all the learned concepts using a RabbitMQ message broker in our practical case.
+5. You learned how spring boot abstracts many functioanlities of RabbitMQ, allowing you to do a lot with just some little code additions.
+6. You refactored a tight-coupled system and covered it in to a proper event driven architecture.
+7. You played with the application to understand how resiliences works, how you can scale up your consumers, and how you deal with transactionality.
+
+
+Bases publish and subscribe pattern, Event driven Architecture
+
+Publisher need not to be aware of subscriber
+Subscriber need not to be aware of publisher
+
+But it have it's own challenges.
+
+Goal of this chapter is to apply Event driven architectures, understanding pros and cons of it.
+
+Core concepts
+=============
+
+The Message Broker
+==================
+In the event driven architecture system components communicates with message broker instead of connecting directly to each other.
+
+Routing functionalities based on channels
+
+One or more publishers may publish messages to each channels
+One or more consumers may consume messages from each channels
+
+What message is ? and the different messsaging topologies
+
+ESB - Smart channels they know where to route and get the responses and finish the complete job
+What was the problem with ESB => Single point of failure. If ESB fails everything fails
+
+Message broker where the publishers publish their events
+and consumers consumes their event.
+
+
+Events and Messages
+===================
+
+Event indicates something happened in the system.
+
+Events get published to the messaging channel by the business logic that owns the domain
+Other components who are interested in that event type subscribes to that channel
+
+This is based on publish and subscribe pattern. Events are linked to both message broker and ESB pattern.
+
+Message
+=======
+ A generic piece of information goes through the message broker.
+
+ when we use events with a message broker, we can better isolate all the components in our software architecture
+
+
+Thinking in events
+==================
+
+When multiplication call the Gamification, It's not only aware of gamification but also take control of gamification.
+
+Scenario -1 - Command - Orchestration
+
+Multiplication  -> update Score -> Gamification
+
+message still has specific destination
+Just replaced synchronous with asynchronous.
+
+To gamification via message broker
+
+Scenario -2  - Event  - Choreography
+Multiplication -> ChallengeSolvdDto -> Gamification
+
+any interested subscriber via message broker
+
+Rest API -> Commands with Synchronous communication
+Directed Command -> Command with Asynchronous communication
+Asynchronous Messaging -> Meassges follow publish subscribe pattern
+
+
+Asynchronous Messaging
+======================
+
+Multiplication publish ChallengeSolvedEvent to any intersted subscriber
+Gamification listening to the messagebroker form ChallengeSolevedEvent.
+
+Synchronous communication with Message Brokers
+
+By using 2 channels
+Multiplication publish attempts on message broker
+and waits for attempts-response on other channel
+
+Gamification waits for the attempts on message broker
+once the job is done publish the attempts-response
+
+Request response pattern on top of message broker
+
+Summary of microservice communication
+=====================================
+
+Pattern : Request/response
+Type : Synchronous
+Implementation : Rest API
+
+Pattern : Commands that requiring blocking
+Type : Synchronous
+Implementation : Rest API
+
+Pattern : Commands that don't require blocking
+Type : Asynchronous
+Implementation : Message broker
+
+Patterns : Events
+Implementation : Asynchronous
+Implementation : Message broker
+
+Note: Even though end to end is asynchronous, We need synchoronous communication in betwwen
+1. Publisher need the acknowledgement from message broker that message is published
+2. Message broker needs the acknowledgemnt from subscrber that message is consumed
+
+
+
+Reactive Systems
+================
+
+Set of design principles to apply in software architecture to make the system responsive, resilient, elastic and message driven
+1. Responsive - Responds on time
+2. Resilient - Stays responsive if there are failure
+3. Elastic - Adapts to be responsive under different workloads
+4. Message Driven - Ensure loose coupling and boundary isolation
+
+React programming means
+patterns such as Futures (Promises), Reactive Streams, back pressure and etc.
+
+
+Pros and Cons of Going event driven
+===================================
+
+Advantage of microservices : Flexibility and Scalability
+Challenges : Eventual consistency, Fault tolerance and partial updates
+
+Benefits
+
+1. Loose Coupling between Microservices
+Use the message broker to keep multiplication unaware of gamification
+
+2. Scalability
+We can add more instances of gamification
+We can add reporting or notification service with events
+
+3. Fault tolerance and event consistency
+Even if the system fails, message broker will persist the message for some time
+and it will start processing once it comes on line.
+
+
+Challenges
+
+1. Dropped Messages
+
+Atleast once gurantee, to ensure altleast once the message is consumed by consumer
+Messages can be duplicated
+
+2. Duplicated Message
+
+Event consumption Idempotent.
+marking the event that we already processed in gamification side
+atmost-once-gurantee
+
+3. Unordered messages
+
+We should be aware event can be unoredered (not is published order)
+
+4. Broker's down time
+
+retry or caches
+flag the service unhealthy and stop accepting
+
+Challenge : Traceability => distributed tracing
+
+Spring Cloud Sleuth
+
+
+Messaging Patterns
+==================
+
+Publisher
+
+Message Broker
+Channel - Produced - 9,8,7,6,5,4,3,2,1
+
+Work Queue
+Subscribers 1 registers two insances to split the load
+Replica1 - Consumed 9,7,5,3,1
+Replica2 - Consumed 8,6,4,2
+Databas1
+
+Publish-Sunscribe
+Different subscribers can receive the same messages
+
+Filtering
+Subscriber2 is not intersted in messages 5 & 6
+Replica1
+Consumed 9,8,7,4,3,2,1
+Databse1
+
+Publish-Subscribe
+=================
+
+2 subscribers subscribed to same messages.
+
+WorkQueues
+==========
+competing consumers
+split messages between multiple instances of same application
+
+Filtering
+=========
+
+Subscriber interested only in particular type of messages.
+Consumers may consumes all the messages and discards the unnecessary
+Message Brokers can also provide filtering mechanism
+
+Data Durability
+===============
+
+aggregate and event sourcing
+
+
+Message Broker Protocols, Standards and Tools
+=============================================
+
+1. Advanced Message Queuing Protocol (AMQP)
+This is a wire-level protocol that defines the data format of messages as a stream of bytes
+
+2. Message Queuing Telemetry Transport (MQTT)
+Popular for Internet of things devices
+It can work with limited bandwidth
+
+3. Streaming Text OR Message Protocol (STOMP)
+Text protocol oriented for message middleware
+
+4. Java Messaging Service (JMS)
+Different JMS clients implementation that connect to message brokers using different underlying protocols.
+
+Popular software tools implements above protocols
+
+1. Rabbit MQ -
+Open source supports AMQP, MQTT and STOMP
+It also offers JMS API client
+
+2. Mosquitto - is an eclipse message broker
+Implements MQTT protocol, Popular choice IOT
+
+3. Kafka was designed originally by linked In
+Binary protocol over TCP
+Requirment for messaging middleware are simple and
+It's commonly used in applications that handle a big volume of data in stream
+
+
+AMQP and Rabbit MQ
+==================
+
+Rabbit MQ 0.9.1
+AMQP version 1.0
+
+
+
+Overall Description
+===================
+
+Publisher
+
+Routingkeys
+1. attempts.correct
+2. attempts.wrong
+
+Message Broker
+Exchange
+321
+Queue1 - Binding key .correct
+31
+Queue2 - Binding key .wrong
+2
+
+Subscriber 1 -> Q1
+Subscriber 2 -> Q2
+
+1. Exchanges
+Where the messages are sent
+do routing to the queues by the logic defined by type and rules known as binding
+Exchanges can be durable which pesist after a broker restart
+can be transient if they don't
+
+2. Queues
+Store the messages to be consumed
+Queues may have 0 1 or more consumers
+Queue can also be durable or transient
+durable doesn't mean all of it messages are persisted
+To ensure that messages also needs to be pubished as persistent messages
+
+3. Bindings
+Rules to route messages published to the exchanges to certain queues.
+Queue is bound to given exchange binding key can be filter
+We can used pattern matches for the binding type
+
+Exchange Type and Routing
+==========================
+
+1. Default exchange
+
+Messages will have quuename -> based on the we could identify the queue
+
+2. The Direct Exchanges
+
+Routing key matches the binding key
+messages know the destination but not how many queues
+Multiple QUEUE with  the same name
+
+
+3. Fanout Exchange
+
+Broad cast scenario, No routing key, route to all the queues
+
+4. The topic Exchange
+
+Filter based on the message  (we can use pattern)
+
+5. The Header Exchange
+
+Message Headers as routing
+
+
+Message Acknowledgement and Rejection
+======================================
+
+1. Automatic ACK confirmin sent
+2. Explicit ACK to confirm recieved and processed by the service
+
+
+Setting up the Rabbit MQ
+========================
+
+Depenendencies
+spring-rabbit
+spring-amqp
+
+Spring Boot provides a starter AMQP with extra utilites such as autoconfiguration.
+Spring-boot-starter-amqp
+
+We will use spring to declare our exchanges, queues and bindings and to produce and consume messages.
+
+Solution Design
+
+Browser
+1. Send attempt to Multiplication service via port 8080
+Multiplication service
+Routing Key
+-attempt.correct
+-attempt.wrong
+Attempts (Topic Excehange)
+
+2. ChallengeSolvedEvent (to any interested subscriber)
+
+Gamification QUEUE
+Binding attempt.correct
+
+3. Multipliction services Response to the browser
+
+4. Gamification Microservice (Update Score)
+
+
+List of task to acheive our plan
+================================
+
+1. Add the new starter dependency to our spring boot application
+2. Remove the Rest API client that sends the challenge explicitly to Gamification and the corresponding controller
+3. Rename the ChallengeSolvedDTO as ChallengeSolvedEvent
+4. Declare  the exchange on Multiplication Service
+5. Change the logic of the Multiplication microservice to publish an event instead of calling REST API
+6. Declare the Queue on the gamification microservice
+7. Include the consumer logic to get the events from the queue and connect it to the existing service layer to process
+the correct attempts for score and badges
+8. Refactor the tests accordingly
+
+
+What we did
+===========
+1. We added the new AMQP starter dependency to our spring boot application to use AMQP and RabbitMQ
+2. We removed the REST API client (in Multiplication) and the controller (in Gamification) because we swtched to an event-driven
+architecture using RabbitMQ
+3. We renamed ChallengeSolvedDTO as ChallengeSolvedEvent. The renaming caused the modification of other classes and tests,
+but those changes are not relevant
+4. We declared the new topic exchange in both microservices
+5. We changed the logic of the multiplication microservices to publish an event instead of calling the REST API
+6. We defined the new queue on the Gamification microservice.
+7. We implemented the RabbitMQ consumer logic in the Gamification microservices
+8. We refactored the tests accordingly to adapt them to the new interfaces.
+
+
+Transactionality
+=================
+
+Stop and Start Rabbit mq
+brew services stop rabbitmq
+brew services start rabbitmq
+
+
+SELECT * FROM USER u, CHALLENGE_ATTEMPT a
+WHERE u.ALIAS ='test-ty' AND u.ID=a.USER_ID
+
+@Transaction
+Will do all or none, No Partial
+
+
+Scaling Up Microservices
+========================
+
+./mvnw spring-boot:run -Dspring-boot.run.arguments="--server.port=9080"
+
+
+Chapters Acheivement
+===================
+
+1. You learned the core concepts of event-driven architectures. For that you got a good knowledge base of how message brokers work.
+2. You went through the pros and cond of event-driven architectures to know when it makes sense to apply this pattern in your future projects
+3. You Understood how to implement different messaging patternd depending on your use cases
+4. You applied all the learned concepts using a RabbitMQ message broker in our practical case
+5. You learned how spring boot abstracts many functionalities of RabbitMQ, allowing you to do a lot with just some little code addition
+6. You refactored tight coupled system and converted it in to a proper event-driven architecture
+7. You played with the application to understand how resilience works, how you can scale up your consumers, and how you deal with transactionality.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
