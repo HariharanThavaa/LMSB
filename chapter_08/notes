@@ -1,0 +1,186 @@
+Common Patterns in Microservice Architectures
+==============================================
+
+Chapter's Acheivements
+======================
+
+1. You learned how to use a gateway to route traffic to your microservices and provide load balancing between their instances
+2. You scaled up a microservice architecture using service discovery, The HTTP load balancer, and RabbitMQ queues
+3. You made the system resilient by checking the health of each instance to find out when they don't work.
+Also you introduced retries to avoid losing requests
+4. You saw how to override configuration per environment with an external configuration server.
+5. You implemented centralized logs with distributed traces across microservices, so you can follow a process from end to end
+6. You integrated all these patterns in our microservice architecture with the projects from Spring cloud family:
+Spring Cloud Gateway, Spring Cloud Load balancer, Spring Cloud Consul (Discovery & Configuration), and Spring Cloud Sleuth
+7. You learned how to create Docker images for our applications using Spring Boot 2.3 and Cloud Native Build packs
+8. You saw how Docker and Compose can help deploy our microservice architecture anywhere. Besides you saw how easy is to spin up
+new instances using Docker
+9. You compared the approach we followed in the book with other alternatives such as container platforms and application platforms
+which include already some of the patterns you need for a distributed architecture
+10. You understood why we introduced the new patterns and tools in every step you made in the chapter.
+
+
+What we going to learn
+1. Service Discovery
+2. Health Detection
+3. Configuration Management
+4. Logging
+5. Tracing
+6. End to end Testing and etc.
+
+
+Gateway
+=======
+1. Frontend should connect to single server with multiple APIs
+2. Keep the frontend logic simple as possible, Load balancing should go to backend
+3. User authentication and security should be in one layer
+
+
+Browser to Gateway
+Send Attempt
+Get User Alias
+Get Leaderboard
+
+Gateway
+Filters
+Routing
+
+Gateway to Multiplcation
+Send Attemtpt
+Get User Alias
+
+Multiplcation to Gamification QUEUE
+Attmpts (Topic Exchange)
+
+Gamification queue to Gamification
+
+Gateway to Gamification
+Get Leaderboard
+
+One of the primary purpose of gateway is restrict access to backend system. This can be acheived by containerization.
+
+Spring Cloud Gateway
+====================
+
+Spring Cloud provide tools to quickly build common required patterns(cloud patterns) in distributed systems
+
+Ref https://tpd.io/scloud
+
+to learn about netflix gatewy
+Ref: https://tpd.io/noss
+
+Core Concepts of Spring Cloud Gateway
+=====================================
+
+1. Predicate
+A condition to be evaluated to decide where to route a request
+Condition builders are based on Request path, request headers, time, remote host etc. (or combination)
+Called as Route Predicate since they are always applied to route
+
+2. Route
+It's a URI where the request will be proxied to if it matches the assigned predicate.
+Address external request to internal microservices.
+
+3. Filter
+An optional processor that can be either attached to a route (route filters) or applied globally (global filters) to
+all the requests.
+
+
+Gateway
+
+Route1 -> Service1
+PredicateA
+PredicateB
+
+Route Filter X
+
+Global Filters
+
+
+Route2  ->  Service2
+Predicate C
+
+Global filters
+
+======================================
+
+Other option to define predicates and filters
+1. Shortcut - one line expression
+2. Fully expanded configuration
+
+Ref : http://tpd.io/gw-notation
+
+
+Ex:
+
+Spring:
+    cloud:
+        gateway:
+            routes:
+                - id : old-travel-conditions
+                    uri : http://oldhost/travel
+                    predicates
+                        - Before=2021-01-01
+                        - Path = /travel-in-spain/**
+                - id : change-travel-conditions
+                    uri : http://somehost/travel-new
+                    predicates :
+                        - After=2021-01-01
+                        - Pathe= /travel-in-spain/**
+                    filters :
+                        - AddResponseHeader=X-New-Condition-Apply, 2021 Jan
+
+Main url => http://my.travel.gateway/
+
+To read about predicates
+Ref: http://tpd.io/pathpred
+
+above example oldhost and somehost doesn't need to accessed by out side.
+
+For more information on Spring Cloud Gateway Capabilities
+Ref: https://tpd.io/gwdocs
+
+
+Gateway Microservice
+
+Sourcecode available on Chapter08A
+
+Gateway Auto Configuration is located in Gateway dependency on top of spring boot. So which is not part regular autoconfiguration
+Ref : https://tpd.io/gwautocfg
+
+Create new microservice
+Ref https://tpd.io/spring-starter
+
+In gateway we need to append some CORS configuration
+Ref : https://tpd.io/gwcors
+
+
+Gateway Configuration
+=====================
+using yml file in Gateway microservice
+
+Any request with http://localhost:8000/attempts -> http://localhost:8080 (Multiplication)
+http://localhost:8000//leaders -> http://localhost:8081 (Gamification)
+
+
+Changes in Other Projects
+=========================
+Deleter CORS configuration from both Multiplication and Gamification
+Update uri in web component
+
+Running the Gateway Microservice
+================================
+
+We saw application woring with Gateway
+Frontend is not aware about backend
+
+So Next steps
+1. Service Discovery
+2. Load balancing
+
+
+
+
+
+
+
