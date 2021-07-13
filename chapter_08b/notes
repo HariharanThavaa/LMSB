@@ -196,6 +196,225 @@ For more information about spring-boot actuator.
 Ref: https://tpd.io/sbactuator
 
 
+Chapter 08B starts Here
+=======================
+
+spring-boot-starter-actuator gives a health check
+
+Add to Multiplication, Gamification and Gateway
+
+If the Rabbitmq is down then multiplication service also down.
+
+
+Service Discovery and Load Balancing
+====================================
+
+Now we know whether the system is availabe or not.
+So the time for service discovery and load balancing
+
+1. The service registry
+A central place with the list of available services, Address where they are located,and some extra metadata like their name.
+
+Service alias - can get list of available service by querying service alias ( ex : multiplcation is an alias)
+
+2. The registrar
+The logic in charge of registering the service instance at the registry.
+
+Regitrar is the logic on microservices
+Registry is the logic in Registry
+
+Figure 8.5
+==========
+
+Service Registry
+Registry
+Service List
+- multiplication -> host1:8080, host2:9080
+- gamification -> host1:8081
+
+Multiplication
+host1:8080 - Registrar
+host2:9080 - Registrar
+
+Gamification
+host1:8081 - Registrar
+
+In order register with service registry microservices should have registrar.
+
+
+Figure 8.8 Gateway and Service Discovery Integration.
+
+Browser
+Send attempt
+Get user alias
+Get Leader board to Gate Way
+
+Gateway
+Service Discovery Client - Spring cloud consule discovery
+Load balancer - Spring cloud load balancer
+Router - Spring Cloud Gateway
+
+Find Service instances from Service Registry
+
+Service Registry
+Registry - Consul
+
+Multiplication
+Registrar - Register itself with  Service Registry
+Service Discovery Client - Find services from Registry (Spring cloud consul discovery)
+Load balancer - HTTP Request (if needed) (spring cloud loadbalancer)
+
+Attmpts (Topic Exchange)
+
+Gamification QUEUE
+
+Gamification
+Restrar -> Register itself with Service Registry.
+
+
+Consul
+=======
+
+Service Discovery Pattern : Consul, Eureka, Zookeeper etc
+
+Consul will provide another pattern in micrservice architecture, centralised configuration
+
+https://tpd.io/dlconsul
+
+Deploying consul in production https://tpd.io/consulprod
+
+to start the consul agent
+consul agent  -node=learnmicro -dev
+
+Request available services
+http -b :8500/v1/agent/services
+
+https://tpd.io/consul-checks
+
+Spring Cloud Consul
+====================
+Add Spring Cloud Consul dependency to Gamification and Multiplication
+
+For update consul configs
+https://tpd.io/consulprops
+https://tpd.io/consulconfig
+
+Need to add below properties to both
+
+Running the second instance of the multiplication service
+
+now run the api service of registered instance
+http -b :8500/v1/agent/services
+
+{
+    "gamification-8081": {
+        "Address": "thavaas-mbp",
+        "Connect": null,
+        "CreateIndex": 0,
+        "EnableTagOverride": false,
+        "ID": "gamification-8081",
+        "Kind": "",
+        "Meta": {
+            "secure": "false"
+        },
+        "ModifyIndex": 0,
+        "Port": 8081,
+        "ProxyDestination": "",
+        "Service": "gamification",
+        "Tags": []
+    },
+    "multiplication": {
+        "Address": "thavaas-mbp",
+        "Connect": null,
+        "CreateIndex": 0,
+        "EnableTagOverride": false,
+        "ID": "multiplication",
+        "Kind": "",
+        "Meta": {
+            "secure": "false"
+        },
+        "ModifyIndex": 0,
+        "Port": 8080,
+        "ProxyDestination": "",
+        "Service": "multiplication",
+        "Tags": []
+    },
+    "multiplication-9080": {
+        "Address": "thavaas-mbp",
+        "Connect": null,
+        "CreateIndex": 0,
+        "EnableTagOverride": false,
+        "ID": "multiplication-9080",
+        "Kind": "",
+        "Meta": {
+            "secure": "false"
+        },
+        "ModifyIndex": 0,
+        "Port": 9080,
+        "ProxyDestination": "",
+        "Service": "multiplication",
+        "Tags": []
+    }
+}
+
+
+Spring Cloud Load Balancer
+==========================
+
+@LoadBalance when creating the rest Template
+
+
+Service Discovery and Load Balancing in the Gateway
+===================================================
+
+Three groups of configuration in application.yml
+
+1. Global settings
+We give a name to the application and make sure we use the spring cloud load balancer implementation
+
+2. Routing Configuration
+Instead of using expilicit host and ports, we switch to service names with URL pattern that also enables load balancing
+
+3. Resilience
+In case the gateway fails to proxy request to service, we want it to retry few times.
+
+
+Circuit Breaker
+===============
+
+Check request, whether system is available
+if not available after number of time it's stop
+After particular period of time recheck the service available
+if not go back to open.
+
+circuit closed connection woring fine
+circuti open mean target is not available
+
+Ref :
+https://tpd.io/cbreak
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/multiplication/.mvn/.mvn.iml" filepath="$PROJECT_DIR$/multiplication/.mvn/.mvn.iml" />
+      <module fileurl="file://$PROJECT_DIR$/gamification/.mvn/.mvn1.iml" filepath="$PROJECT_DIR$/gamification/.mvn/.mvn1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/challenges-frontend/challenges-frontend.iml" filepath="$PROJECT_DIR$/challenges-frontend/challenges-frontend.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/chapter_08.iml" filepath="$PROJECT_DIR$/.idea/chapter_08.iml" />
+      <module fileurl="file://$PROJECT_DIR$/gamification/gamification.iml" filepath="$PROJECT_DIR$/gamification/gamification.iml" />
+      <module fileurl="file://$PROJECT_DIR$/gateway/gateway.iml" filepath="$PROJECT_DIR$/gateway/gateway.iml" />
+      <module fileurl="file://$PROJECT_DIR$/multiplication/src/main/main.iml" filepath="$PROJECT_DIR$/multiplication/src/main/main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/gamification/src/main/main1.iml" filepath="$PROJECT_DIR$/gamification/src/main/main1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/multiplication/multiplication.iml" filepath="$PROJECT_DIR$/multiplication/multiplication.iml" />
+      <module fileurl="file://$PROJECT_DIR$/multiplication/src/test/test.iml" filepath="$PROJECT_DIR$/multiplication/src/test/test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/gamification/src/test/test1.iml" filepath="$PROJECT_DIR$/gamification/src/test/test1.iml" />
+    </modules>
+  </component>
+</project>
