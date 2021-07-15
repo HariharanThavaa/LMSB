@@ -81,5 +81,11 @@ A simple solution for log centralization
 
 Ref: https://tpd.io/logback-layout
 
+<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-amqp</artifactId>
+		</dependency>
+
+
 
 
