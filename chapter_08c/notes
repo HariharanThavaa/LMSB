@@ -81,10 +81,106 @@ A simple solution for log centralization
 
 Ref: https://tpd.io/logback-layout
 
-<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-amqp</artifactId>
-		</dependency>
+Distributed Tracing
+==================
+
+Spring cloud Sleuth
+===================
+
+Sleuth uses : https://tpd.io/brave
+
+Implementing Distributed Tracing
+================================
+
+Docker
+======
+
+Ref: https://tpd.io/docker-start
+
+In Docker, we can package our application and any supporting component it may need as images.
+
+The official public registry of images is the Docker Hub (https://tpd.io/docker-hub)
+
+Version - 16 https://tpd.io/docker-jdk
+
+Docker file definition
+https://tpd.io/dockerfile-ref
+
+Building a Docker Image manually
+================================
+
+docker build -t multiplication:1.0.0 .
+This will create the image locally
+
+to run that image
+docker run -it -p 18080:8080 multiplication:1.0.0
+
+Spring Boot and Build packs
+===========================
+
+From 2.3.0 Spring boot
+Maven and Gradle plugins have the option to build Open Container Initiative (OCI)
+images using Cloud Native Build packs (https://tpd.io/buildpacks)
+
+./mvnw spring-boot:build-image
+
+docker run -it -p 18081:8081 gamification:0.0.1-SNAPSHOT
+
+Running Our System in Docker
+============================
+
+Run
+./mvnw spring-boot:build-image
+for logs, gamification, multiplication and gateway
+
+then run
+docker images
+see all the images
+
+For UI
+npm run build -> run the build
+docker build -t challenges-frontend:1.0 .
+
+
+Dockerizing the configuration importer
+======================================
+
+Use the consul server
+
+config root and
+defaults,docker
+application.yml
+
+1. Set host for Rabbitmq, later we ensure rabbitmq available on that host
+2. Override Instance Identifier assigned to running services to be used at the service registry.
+ref : https://tpd.io/random-properies
+
+add consul properties
+
+consul kv export config/ > consul-kv-docker.json
+
+
+Docker Compose
+==============
+
+To group container configuration and deployment instructions : Docker Compose
+
+https://tpd.io/compose-install
+
+https://tpd.io/compose3
+
+Docker Images Documentation
+https://tpd.io/consul-docker
+
+docker-compose up
+
+
+
+
+
+
+
+
 
 
 
