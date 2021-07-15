@@ -1,0 +1,85 @@
+Centralised Configuration
+=========================
+
+Production Environment
+
+Config Server
+Staging config - disabled
+Prod config - enabled
+
+Multiplication - enabled profile prod
+Get Config: Prod : Config server client
+
+Gamification - enabled profile prod
+Get Config: Prod : Config server client
+
+
+Staging Environment
+
+Config Server
+Staging config - enable
+Prod config - disabled
+
+Multiplication - enabled profile staging
+Get Config: Staging : Config server client
+
+Gamification - enabled profile staging
+Get Config: Staging : Config server client
+
+
+Spring cloud config server project
+
+with consul combining service discovery, health checks and centralized configuration.
+
+
+Configuration in Consul
+========================
+You can create key value pairs in consul
+http://localhost:8500/ui/dc1/kv/create
+
+Ref : http://tpd.io/kv-api
+
+Spring cloud consul config
+
+Implementing Centralized config
+===================================
+to Multiplication Gamification and Gateway
+We have created bootstrap.properties to identify the centralized configuration
+To enable this behaviour we have added Spring Cloud Consul Config starter Dependency
+
+
+Centralized logs
+================
+
+To see the all the component logs in one place.
+
+Log Aggregation Pattern
+=======================
+Component send their logs to one place and we can view there
+
+ELK stack and alias combination
+Ref : https://tpd.io/elastic
+Elastic Search - The storage system with powerful text search feature
+Logstash - The agent to channel logs to Elastic search from multiple sources
+Kibana - The UI tool to manage and query logs
+
+ELK docs (http://tpd.io/elk)
+
+
+A simple solution for log centralization
+========================================
+
+1. applicationId : Which application the log is belongs to
+2. host:
+3. routingKeyPattern: to concatenate application id + log level
+4. exchangeName
+5. declareExchange
+6. durable : to persist or not
+7. deliveryMode : log message are stored until they're consumed by the aggregator
+8. generatedId: each message have the uniique id
+9. charset: ensure all parties using the same encoding
+
+Ref: https://tpd.io/logback-layout
+
+
+
